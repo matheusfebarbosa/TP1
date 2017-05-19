@@ -7,6 +7,7 @@ void makeEmptyGraph(Graph **graph, int nVertices){
 	(*graph)->color = (int*) calloc(nVertices,sizeof(int));
 	(*graph)->adjLists = (AdjList**) calloc(nVertices,sizeof(AdjList*));
 	(*graph)->adjMatrix = (int**) calloc(nVertices,sizeof(int*));
+	(*graph)->d = (int*) calloc(nVertices,sizeof(int));
 	for(i=0;i<nVertices;i++){
 		(*graph)->adjMatrix[i] = (int*) calloc(nVertices,sizeof(int));
 		for(j=0;j<nVertices;j++){
@@ -51,22 +52,67 @@ void readGraph(Graph **map){
 	}
 }
 
-/*
-int BFS(Graph *map, int s, int *minRes, int t){
 
+int BFS(Graph *map, int s, int t){
+	int i,cur;
+	VertexQueue* queue;
+	AdjCell adj = NULL;
+
+	makeEmptyVertexQueue(&queue);
+
+	for(i=0; i<map->nVertices;i++){
+		map->d[i] = -1;
+		map->color[i] =  WHITE;
+	}
+
+	enqueue(queue,s);
+
+	while(!emptyQueue(queue)){
+		dequeue(queue,&cur);
+		adj = map->adjLists[cur]->first->next;
+		while(adj!=NULL){
+			if(map->color[adj->vertex]==WHITE && map->adjMatrix[cur][adj->vertex]>0){
+				enqueue(queue,adj->vertex);
+				map->d[adj->vertex]=cur;
+				map->color[adj->vertex] = GRAY;	
+			}
+			if(adj->vertex == t){
+				return 1;
+			}
+			adj =  adj->next;
+		}
+		map->color[cur]=BLACK;
+	}
+
+	return 0;
 }
 
 
 int maximumFlow(Graph *map){
-	int minRes=12312312; 
+	int minRes; 
 	int sum = 0;
-	while(BFS(map,map->nVertices-2,&minRes,map->nVertices-1)){
-		sum += minRes;
+	int cur;
+	int s = map->nVertices-2, t = map->nVertices-1;
+	while(BFS(map, s, t)){
 		minRes=12312312;
+		cur = t; 
+		while(map->d[cur]!=-1){
+			if(map->adjMatrix[map->d[cur]][cur]<minRes){
+				minRes = map->adjMatrix[map->d[cur]][cur];
+			}
+			cur = map->d[cur];
+		}
+		cur = t;
+		while(map->d[cur]!=-1){
+			map->adjMatrix[map->d[cur]][cur] -= minRes;
+			map->adjMatrix[cur][map->d[cur]] += minRes;
+			cur = map->d[cur];
+		}
+		sum += minRes;
 	}
 	
 	return sum;
-}*/
+}
 
 /*void graphDestroy(Graph **graph){
 	int i;
