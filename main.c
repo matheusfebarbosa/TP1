@@ -5,6 +5,7 @@ int main(){
 
 	readGraph(&map);
 
+	printf("%d\n",maximumFlow(map));
 
 	return 0;
 }

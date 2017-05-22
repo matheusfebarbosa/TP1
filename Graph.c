@@ -1,7 +1,7 @@
 #include "Graph.h"
 
 void makeEmptyGraph(Graph **graph, int nVertices){
-	int i;
+	int i,j;
 	*graph = (Graph*) calloc(1,sizeof(Graph));
 	(*graph)->nVertices = nVertices;
 	(*graph)->color = (int*) calloc(nVertices,sizeof(int));
@@ -9,15 +9,23 @@ void makeEmptyGraph(Graph **graph, int nVertices){
 	(*graph)->adjMatrix = (int**) calloc(nVertices,sizeof(int*));
 	for(i=0;i<nVertices;i++){
 		(*graph)->adjMatrix[i] = (int*) calloc(nVertices,sizeof(int));
+		for(j=0;j<nVertices;j++){
+			(*graph)->adjMatrix[i][j] = -1;
+		}
 		makeEmptyAdjList((*graph)->adjLists+i);
 	}
 }
 
 void insertEdge(Graph *graph, VertexValue a, VertexValue b, int weight){
+	if(graph->adjMatrix[a][b] == -1){
+		insertVertex(graph->adjLists[a],b);	
+	}
 	graph->adjMatrix[a][b] = weight;
-	graph->adjMatrix[a][b] = 0;
-	insertVertex(graph->adjLists[a],b);
-	insertVertex(graph->adjLists[b],a);
+	
+	if(graph->adjMatrix[b][a] == -1){
+		graph->adjMatrix[b][a] = 0;
+		insertVertex(graph->adjLists[b],a);
+	}
 }
 
 
@@ -42,51 +50,52 @@ void readGraph(Graph **map){
 		insertEdge(*map,va,vb,1232131);
 	}
 }
-/*
+
 int visitDFS(Graph *map, VertexValue s, int *minRes, VertexValue t){
-	 if(s==t){
+	if(s==t){
     	return 1;
     }
 
  	int foi=0;
  	int back;
     map->color[s] = GRAY;
-    EdgeCell next = map->adj[s]->first->next;
-    printf("%d", next->edge.weight);
-    while(next!=NULL){
-        if(map->color[next->edge.destiny] == WHITE && next->edge.weight>0){
-        	if(next->edge.weight<(*minRes)){
+    AdjCell nextV = map->adjLists[s]->first->next;
+    VertexValue v;
+    while(nextV!=NULL){
+        v = nextV->vertex;
+        if(map->color[v] == WHITE && map->adjMatrix[s][v]>0){
+        	if(map->adjMatrix[s][v]<(*minRes)){
         		back = *minRes;
-            	*minRes = next->edge.weight;
+            	*minRes = map->adjMatrix[s][v];
             }
-            foi = visitDFS(map, next->edge.destiny, minRes, t);
+            foi = visitDFS(map, v, minRes, t);
             if(foi){
-            	next->edge.weight -= *minRes;
-            	next->edge.revert->edge.weight += *minRes;
+            	map->adjMatrix[s][v] -= *minRes;
+            	map->adjMatrix[v][s] += *minRes;
             	map->color[s] = WHITE;
             	return 1;
             }
             *minRes = back;
         }
-        next = next->next;
+        nextV = nextV->next;
     }
     map->color[s] = BLACK;
     return 0;
 }
 
+
 int maximumFlow(Graph *map){
 	int minRes=12312312; 
 	int sum = 0;
 	while(visitDFS(map,map->nVertices-2,&minRes,map->nVertices-1)){
-		printf("Oi\n");
 		sum += minRes;
 		minRes=12312312;
 	}
 	
-	return sum;;
+	return sum;
 }
 
-void graphDestroy(Graph **graph){
+/*void graphDestroy(Graph **graph){
 	int i;
 
 	free((*graph)->verticesType);
