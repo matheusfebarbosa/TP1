@@ -5,8 +5,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "AdjList.h"
+#include "VertexQueue.h"
 
 //Type definition
 typedef struct GraphType Graph;
@@ -20,7 +20,7 @@ struct GraphType{
 
 void makeEmptyGraph(Graph **graph, int nVertices);
 void readGraph(Graph **map);
-void insertEdge(Graph *graph, VertexValue a, VertexValue b, int weight);
-int BFS(Graph *map, VertexValue s, int *minRes, VertexValue t);
+void insertEdge(Graph *graph, int a, int b, int weight);
+int BFS(Graph *map, int s, int *minRes, int t);
 int maximumFlow(Graph *map);
 /*void graphDestroy(Graph **graph);*/

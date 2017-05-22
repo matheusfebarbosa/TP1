@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int VertexValue;
-typedef struct Cell *AdjCell;
+typedef struct AdjCell *AdjCell;
 typedef struct List AdjList;
 
-struct Cell{
-	VertexValue vertex;
+struct AdjCell{
+	int vertex;
 	AdjCell next;
 };
 
@@ -15,4 +14,4 @@ struct List{
 };
 
 void makeEmptyAdjList(AdjList **list);
-void insertVertex(AdjList *list, VertexValue v);
+void insertVertex(AdjList *list, int v);

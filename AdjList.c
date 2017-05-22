@@ -7,9 +7,9 @@ void makeEmptyAdjList(AdjList **list){
 	(*list)->last = (*list)->first;
 }
 
-void insertVertex(AdjList *list, VertexValue v){
+void insertVertex(AdjList *list, int v){
 	AdjCell aux = list->first;
 	aux->vertex = v;
-	list->first = (AdjCell) calloc(1,sizeof(struct Cell));
+	list->first = (AdjCell) calloc(1,sizeof(struct AdjCell));
 	list->first->next = aux;
 }
