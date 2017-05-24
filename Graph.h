@@ -13,15 +13,14 @@ typedef struct GraphType Graph;
 
 struct GraphType{
 	int **adjMatrix;
-	AdjList **adjLists;
+	//AdjList **adjLists;
 	int *d;
-	int *color;
 	int nVertices;
 };
 
 void makeEmptyGraph(Graph **graph, int nVertices);
 void readGraph(Graph **map);
 void insertEdge(Graph *graph, int a, int b, int weight);
-int BFS(Graph *map, int s, int t);
+int BFS(Graph *map, int s, int t, int *min);
 int maximumFlow(Graph *map);
-/*void graphDestroy(Graph **graph);*/
+void graphDestroy(Graph **graph);

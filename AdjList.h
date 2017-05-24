@@ -15,3 +15,4 @@ struct List{
 
 void makeEmptyAdjList(AdjList **list);
 void insertVertex(AdjList *list, int v);
+void killList(AdjList **list);

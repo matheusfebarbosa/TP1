@@ -7,5 +7,7 @@ int main(){
 	
 	printf("%d\n",maximumFlow(map));
 
+	graphDestroy(&map);
+
 	return 0;
 }
